@@ -38,12 +38,33 @@ uint32_t l = (x << 11) | (x >> (32-11));
 return l;
 }
 
+uint32_t Gk(uint32_t k, uint32_t in) {
+	uint32_t s;
+	for(int i = 0; i < 32; i++)
+	s = (i,(G(k,in) ^ (i+1));
+	return s;
+}
+
+uint32_t Gk_so_zvezdoi(uint32_t k, uint32_t in) {
+	uint32_t l;
+	for(int i = 0; i < 32; i++) 
+	l = T((G(k,in)^(i+1)));
+	return l;
+}
+
 uint32_t key_shedule(char key[32]); //?? вопрос как теперь преобразовать нижестояющее в эту функцию
 
 char key[32];
 uint32_t rk[8];
-for (int i = 0; i < 8; i++) {
-	rk[i] = key[4*i] << 24 | key[4*i + 1] << 16 | key[4*i + 2] << 8 | key[4*i + 3];
-}
-uint32_t encryption(
+for (int i = 0; i < 8; i++) 
+rk[i] = key[4*i] << 24 | key[4*i + 1] << 16 | key[4*i + 2] << 8 | key[4*i + 3];	
+
+
+uint32_t encryption(uint32_t key[32]){
+ 	uint32_t rkl[16];
+	uint32_t rkr[16];
+	for(int i = 0; i < 16; i++)
+		rkl[i] = (key[32] << 11) | (key[32] >> (32-11));
+		rkl[i] = (key[32] >> 11) | (key[32] << (32-11));
+	for(int i = 0; i < 32; i++)
 
