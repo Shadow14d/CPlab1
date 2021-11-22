@@ -38,9 +38,12 @@ uint32_t l = (x << 11) | (x >> (32-11));
 return l;
 }
 
+uint32_t key_shedule(char key[32]); //?? вопрос как теперь преобразовать нижестояющее в эту функцию
+
 char key[32];
 uint32_t rk[8];
 for (int i = 0; i < 8; i++) {
 	rk[i] = key[4*i] << 24 | key[4*i + 1] << 16 | key[4*i + 2] << 8 | key[4*i + 3];
 }
+uint32_t encryption(
 
