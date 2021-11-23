@@ -40,14 +40,12 @@ return l;
 
 uint32_t Gk(uint32_t k, uint32_t in) {
 	uint32_t s;
-	for(int i = 0; i < 32; i++)
-	s = (i,(G(k,in) ^ (i+1));
+	s = (i,(G(k,in)^i+1);
 	return s;
 }
 
 uint32_t Gk_so_zvezdoi(uint32_t k, uint32_t in) {
 	uint32_t l;
-	for(int i = 0; i < 32; i++) 
 	l = T((G(k,in)^(i+1)));
 	return l;
 }
@@ -67,4 +65,9 @@ uint32_t encryption(uint32_t key[32]){
 		rkl[i] = (key[32] << 11) | (key[32] >> (32-11));
 		rkl[i] = (key[32] >> 11) | (key[32] << (32-11));
 	for(int i = 0; i < 32; i++)
+
+
+
+
+
 
