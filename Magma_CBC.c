@@ -8,7 +8,7 @@
 
 uint32_t L[32];
 uint32_t R[32];
-
+uint64_t Block[64];
 uint32_t P0[16]=  {0x12,0x04,0x06,0x02,0x10,0x05,0x11,0x09,0x014,0x08,0x13,0x07,0x00,0x03,0x15,0x01};
 uint32_t P1[16] = {0x06,0x08,0x02,0x03,0x09,0x10,0x05,0x12,0x01,0x14,0x4,0x07,0x11,0x13,0x00,0x15};
 uint32_t P2[16] = {0x11,0x03,0x05,0x08,0x02,0x15,0x10,0x13,0x14,0x01,0x07,0x04,0x12,0x09,0x06,0x00};
@@ -20,7 +20,7 @@ uint32_t P3[16] = {0x12,0x08,0x02,0x01,0x13,0x04,0x15,0x06,0x07,0x00,0x10,0x05,0
 
 uint32_t T(uint32_t in){
     uint32_t out = 0;
-    out |= P7[in >> 7*4 & 0xF] << 7*4;
+    out |= (P7[in >> 7*4 & 0xF] << 7*4);
     out |= P6[in >> 6*4 & 0xF] << 6*4;
     out |= P5[in >> 5*4 & 0xF] << 5*4;
     out |= P4[in >> 4*4 & 0xF] << 4*4;
@@ -39,44 +39,55 @@ uint32_t l = (x << 11) | (x >> (32-11));
 return l;
 }
 
-uint32_t Gk(uint32_t k, uint32_t in) {
-	uint32_t s;
-	s = (i,(G(k,in)^i+1);
-	return s;
+//uint32_t Gk(uint32_t k, uint32_t in) {
+//	uint32_t s;
+//	s = (i,(G(k,in)^i+1));
+//	return s;
+//}
+
+//uint32_t Gk_so_zvezdoi(uint32_t k, uint32_t in) {
+//	uint32_t l;
+//	l = T((G(k,in)^(i+1)));
+//	return l;
+//}
+
+//uint32_t key_shedule(char key[32]); //?? вопрос как теперь преобразовать нижестояющее в эту функцию
+
+//char key[32];
+//uint32_t rk[8];
+//for (int i = 0; i < 8; i++) 
+    //   rk[i] = key[4*i] << 24 | key[4*i + 1] << 16 | key[4*i + 2] << 8 | key[4*i + 3];	
+
+
+uint64_t encryption(uint32_t *key, uint64_t block){
+		uint32_t res;	
+		uint32_t L = block >> 32;
+	       	uint32_t R = block & 0xffffffff;
+		printf("T - %lx\n",T(0xfdb97531));
+	for(int i = 0; i < 32; i++) {
+		res = T(R^key[i]); 
+		printf("L - %lx\n", L);
+	       printf("R - %lx\n",R);	
+		printf("key - %lx\n",key[i]);
+	       	res = (res << 11) | (res >> (32-11));
+		printf("R^key - %lx\n", R^key[i]);
+		printf("T(R^key) - %lx\n",T(R^key[i]));
+		printf("res - %lx\n\n", res);
+		res = res^L;
+		L = R;
+		R = res;
+	}
+       	return ((uint64_t) L << 32) | R; 
 }
-
-uint32_t Gk_so_zvezdoi(uint32_t k, uint32_t in) {
-	uint32_t l;
-	l = T((G(k,in)^(i+1)));
-	return l;
-}
-
-uint32_t key_shedule(char key[32]); //?? вопрос как теперь преобразовать нижестояющее в эту функцию
-
-char key[32];
-uint32_t rk[8];
-for (int i = 0; i < 8; i++) 
-rk[i] = key[4*i] << 24 | key[4*i + 1] << 16 | key[4*i + 2] << 8 | key[4*i + 3];	
-
-
-uint32_t encryption(uint32_t key[], uint32_t L[], uint32_t R[]){
- 	for(int i = 0; i < 32; i++) {
-		uint32_t left = R[i];
-		uint32_t right = G(key[i],T(R[i]^key[i]))^L[i];
-		}
-		uint32_t result = *strcat(uint32_t *right, uint32_t *left);
-
-		return result;
-}
-uint32_t decryption(uint32_t key[], uint32_t L[], uint32_t R[]) {
-	for(int i = 32; i >0; i--) {
-		uint32_t left = R[i];
-		uint32_t right = G(key[i], T(R[i]^key[i]))^L[i];
-		}	
-		uint32_t result = *strcat(uint32_t *right, uint32_t *left);
-
-		return result;
-}
+//uint32_t decryption(uint32_t key[], uint32_t L[], uint32_t R[]) {
+//	for(int i = 32; i >0; i--) {
+//		uint32_t left = R[i];
+//		uint32_t right = G(key[i], T(R[i]^key[i]))^L[i];
+//		}	
+//	uint32_t result = *strcat(uint32_t *right, uint32_t *left);
+//
+//		return result;
+//}
 
 
 
