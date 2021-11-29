@@ -85,15 +85,30 @@ uint64_t encryption(uint32_t *key, uint64_t block){
 	L ^= R;
        	return ((uint64_t) L << 32) | R; 
 }
-//uint32_t decryption(uint32_t key[], uint32_t L[], uint32_t R[]) {
-//	for(int i = 32; i >0; i--) {
-//		uint32_t left = R[i];
-//		uint32_t right = G(key[i], T(R[i]^key[i]))^L[i];
-//		}	
-//	uint32_t result = *strcat(uint32_t *right, uint32_t *left);
-//
-//		return result;
-//}
+uint64_t decryption(uint32_t *key_rev, uint64_t block) {
+		uint32_t res;
+		uint32_t L = block >> 32;
+		uint32_t R = block & 0xffffffff;
+                printf("T-rev - %lx\n",T(0xfdb97531));
+        for(int i = 0; i < 32; i++) {
+                res = T(R+key_rev[i]);
+                printf("L-rev - %08lx\n", L);
+                printf("R-rev - %08lx\n",R);
+                printf("key_rev - %08lx\n",key_rev[i]);
+                res = (res << 11) | (res >> (32-11));
+                printf("R+rev_key - %08lx\n", R+key_rev[i]);
+                printf("T(R+rev_key) - %08lx\n",T(R+key_rev[i]));
+                printf("res-rev - %08lx\n\n", res);
+                res = res^L;
+                L = R;
+                R = res;
+        }
+        L ^= R;
+        R ^= L;
+        L ^= R;
+        return ((uint64_t) L << 32) | R;
+}
+
 
 
 
