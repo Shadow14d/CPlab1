@@ -3,9 +3,6 @@
 #include <string.h>
 
 
-//PRF_GOSTR3411(u_int32_t SecurityParameters_enc_key_length, u_int32_t SecurityParameters_mac_key_length, u_int8_t SecurityParameters_fixed_iv_length);
-//key_block = PRF(SecurityParameters.master_secret,"key expansion",SecurityParameters.server_random + SecurityParameters.client_random);
-
 uint32_t L[32];
 uint32_t R[32];
 uint64_t Block[64];
@@ -42,6 +39,7 @@ uint32_t l = (x << 11) | (x >> (32-11));
 return l;
 }
 
+
 //uint32_t Gk(uint32_t k, uint32_t in) {
 //	uint32_t s;
 //	s = (i,(G(k,in)^i+1));
@@ -54,20 +52,33 @@ return l;
 //	return l;
 //}
 
-//uint32_t key_shedule(char key[32]); //?? вопрос как теперь преобразовать нижестояющее в эту функцию
-
-//char key[32];
-//uint32_t rk[8];
-//for (int i = 0; i < 8; i++) 
-    //   rk[i] = key[4*i] << 24 | key[4*i + 1] << 16 | key[4*i + 2] << 8 | key[4*i + 3];	
-
+void key_shedule() {	
+//uint64_t key[] ="ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9afbfcfdfeff";
+char key[32];
+uint32_t rk[8];
+for (int i = 0; i < 8; i++) 
+      rk[i] = key[4*i] << 24 | key[4*i + 1] << 16 | key[4*i + 2] << 8 | key[4*i + 3];	
+}
 
 uint64_t encryption(uint32_t *key, uint64_t block){
 		uint32_t res;	
 		uint32_t L = block >> 32;
 	       	uint32_t R = block & 0xffffffff;
 		printf("T - %lx\n",T(0xfdb97531));
-	for(int i = 0; i < 32; i++) {
+	for(int i = 0; i < 24; i++) {
+		res = T(R+key[i]); 
+		printf("L - %08lx\n", L);
+	       printf("R - %08lx\n",R);	
+		printf("key - %08lx\n",key[i]);
+	       	res = (res << 11) | (res >> (32-11));
+		printf("R^key - %08lx\n", R+key[i % 8]);
+		printf("T(R^key) - %08lx\n",T(R+key[i]));
+		printf("res - %08lx\n\n", res);
+		res = res^L;
+		L = R;
+		R = res;
+	}
+	for(int i = 7; i >= 0; i--) {
 		res = T(R+key[i]); 
 		printf("L - %08lx\n", L);
 	       printf("R - %08lx\n",R);	
@@ -108,6 +119,24 @@ uint64_t decryption(uint32_t *key_rev, uint64_t block) {
         L ^= R;
         return ((uint64_t) L << 32) | R;
 }
+
+uint64_t IV;
+uint32_t rk[8];
+//uint64_t CBCenc[0] = encryption(rk, P[0]^IV);
+//uint64_t CBCenc[lenMsg] ; 
+CBCenc[0] = IV^P[0]);
+for(int i = 0 ; i < lenMsg; i++) {
+	CBCenc[i+1] = encryption(rk, P[i]^CBCenc[i]);
+
+}
+//uint64_t P[lenMsg];
+/*
+P[0];
+for(int i = 0 ; i < lenMsg; i++) {
+	uint64_t CBCdec[i] = decryption(rk, Block^IV);
+	P[i] = P[i]^decryption(rk, C[i]);
+}
+
 
 
 
