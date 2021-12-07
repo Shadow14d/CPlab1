@@ -52,12 +52,9 @@ return l;
 //	return l;
 //}
 
-void key_shedule() {	
-//uint64_t key[] ="ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9afbfcfdfeff";
-char key[32];
-uint32_t rk[8];
-for (int i = 0; i < 8; i++) 
-      rk[i] = key[4*i] << 24 | key[4*i + 1] << 16 | key[4*i + 2] << 8 | key[4*i + 3];	
+void key_shedule(uint32_t *rk, uint32_t *key) {	
+	for (int i = 0; i < 8; i++) 
+	      	rk[i] = key[4*i] << 24 | key[4*i + 1] << 16 | key[4*i + 2] << 8 | key[4*i + 3];	
 }
 
 uint64_t encryption(uint32_t *key, uint64_t block){
@@ -119,24 +116,25 @@ uint64_t decryption(uint32_t *key_rev, uint64_t block) {
         L ^= R;
         return ((uint64_t) L << 32) | R;
 }
-uint64_t CBC_enc(uint64_t IV,uint64_t key, uint64_t Block) {
-	uint64_t C0 = IV;
-	for(int i = 0; i < 64; i++) {
-		uint64_t tmp = Block[i]^Block[i-1];
+uint64_t CBC_enc(uint64_t* C, uint64_t IV,uint64_t key, size_t size, uint64_t *P) {
+	uint64_t C[0] = encrypt(rk, P[0]^IV);
+	for(int i = 1; i < size; i++) {
+		uint64_t tmp = C[i]^C[i-1];
 		C[i] = encryption(key,tmp);
 	}
 	return C[i];
 }
+
+
 uint64_t CBC_dec(uint64_t IV, uint64_t rev_key uint64_t Block) {
 	uint64_t C0 = IV;
 	for(int i = 1; i < 64; i++) {
 		uint64_t tmp = Block[i]^Block[i-1];
-		Block[i] = decryption(key, tmp);
+		Block[i] = decryption(rev_key, tmp);
 	}
 	return P[i];
 }
-
-
+ 
 
 
 
