@@ -119,6 +119,22 @@ uint64_t decryption(uint32_t *key_rev, uint64_t block) {
         L ^= R;
         return ((uint64_t) L << 32) | R;
 }
+uint64_t CBC_enc(uint64_t IV,uint64_t key, uint64_t Block) {
+	uint64_t C0 = IV;
+	for(int i = 0; i < 64; i++) {
+		uint64_t tmp = Block[i]^Block[i-1];
+		C[i] = encryption(key,tmp);
+	}
+	return C[i];
+}
+uint64_t CBC_dec(uint64_t IV, uint64_t rev_key uint64_t Block) {
+	uint64_t C0 = IV;
+	for(int i = 1; i < 64; i++) {
+		uint64_t tmp = Block[i]^Block[i-1];
+		Block[i] = decryption(key, tmp);
+	}
+	return P[i];
+}
 
 
 
